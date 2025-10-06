@@ -6,49 +6,43 @@ import TextField from "@mui/material/TextField";
 const Main = () => {
   return (
     <Box className={styles.BoxMain}>
-      { /* UPPPER MAGIC */}
-      <Box sx={{ display: 'flex', padding: 2, backgroundColor: '#efef23' }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            backgroundColor: "#efef23",
-            height: "50%",
-          }}
-        >
-          <Avatar />
-          <Avatar />
-          <Avatar />
-          <Avatar />
-          <Avatar />
-          <Avatar />
-          <Avatar />
+      {/* UPPPER MAGIC */}
+      <Box
+        sx={{ display: "flex", padding: 2, backgroundColor: "#efef23", gap: 2 }}
+      >
+        <Box className={styles.BoxSideMenu}>
+          <Avatar className={styles.avatar} />
+          <Avatar className={styles.avatar} />
+          <Avatar className={styles.avatar} />
+          <Avatar className={styles.avatar} />
+          <Avatar className={styles.avatar} />
+          <Avatar className={styles.avatar} />
+          <Avatar className={styles.avatar} />
+          <Avatar className={styles.avatar} />
+          <Avatar className={styles.avatar} />
+          <Avatar className={styles.avatar} />
         </Box>
         <Box className={styles.BoxCart}>
-          Imagem
+          <Box>
+            
+          </Box>
         </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            backgroundColor: "#efef23",
-            height: "50%",
-          }}
-        >
-          <Avatar />
-          <Avatar />
-          <Avatar />
-          <Avatar />
-          <Avatar />
-          <Avatar />
-          <Avatar />
+        <Box className={styles.BoxSideMenu}>
+          <Avatar className={styles.avatar} />
+          <Avatar className={styles.avatar} />
+          <Avatar className={styles.avatar} />
+          <Avatar className={styles.avatar} />
+          <Avatar className={styles.avatar} />
+          <Avatar className={styles.avatar} />
+          <Avatar className={styles.avatar} />
+          <Avatar className={styles.avatar} />
+          <Avatar className={styles.avatar} />
+          <Avatar className={styles.avatar} />
         </Box>
       </Box>
       {/* DOWN MAGIC  */}
-      <Box sx={{ width: '100%', backgroundColor: '#a1a1a131' }}>
-        <TextField name="card" multiline rows={3} sx={{ width: '100%' }}/>
+      <Box sx={{ width: "60%", backgroundColor: "#a1a1a131" }}>
+        <TextField name="card" multiline rows={3} sx={{ width: "100%" }} />
       </Box>
     </Box>
   );

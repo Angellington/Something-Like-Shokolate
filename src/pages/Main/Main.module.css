@@ -13,11 +13,55 @@
 
 .BoxCart {
   background-color: aquamarine;
-  width: 50vw;
-  height: 40vh;
+  width: 720px;
+  height: 380px;
   border: 0.2rem solid rgba(0, 0, 0, 0.336);
   border-radius: 2px;
   box-shadow: 0.2rem 0.2em 0.2rem;
+}
+
+.BoxSideMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  height: 400px; /* ou a altura que preferir */
+  overflow-y: auto;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.BoxSideMenu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.BoxSideMenu::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.BoxSideMenu::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.BoxSideMenu::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.avatar {
+  width: 50px !important;
+  height: 50px !important;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.avatar:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 /*# sourceMappingURL=Main.module.css.map */
