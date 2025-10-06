@@ -1,0 +1,91 @@
+@charset "UTF-8";
+.chocolate {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+  position: relative;
+  cursor: pointer;
+
+}
+
+.chocolate img {
+  width: auto;
+  height: 90vh;
+  max-width: none;
+  max-height: none;
+  display: block;
+  transform: translate(25px, 100px);
+
+}
+
+.explosion {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+  position: relative;
+  scale: 3;
+  z-index: 5;
+}
+.explosion img {
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  display: block;
+}
+
+.shokoDrawn {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80vw; /* valor padrão para mobile */
+  z-index: 1000;
+}
+
+.shokoDrawn img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.shokoName {
+  position: absolute;
+  bottom: -38px;
+  right: 12px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  font-family: "Segoe UI", sans-serif;
+}
+
+@media (min-width: 768px) {
+  .chocolate {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: visible;
+  }
+  .chocolate img {
+    width: auto;
+    height: 100vh;
+    max-width: none;
+    max-height: none;
+    display: block;
+}
+}
+@media (min-width: 768px) and (min-width: 768px) {
+  .shokoDrawn {
+    width: 50vw; /* 50% da tela no desktop */
+  }
+}
+
+/*# sourceMappingURL=Chocolate.css.map */
