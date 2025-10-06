@@ -6,9 +6,6 @@
   font-family: "markin";
   src: url("/fonts/Markin.ttf") format("truetype");
 }
-body {
-  background-color: blueviolet;
-}
 
 .DateTime .TimeNow-Container .p-TimeNow-stroke, .DateTime .TimeNow-Container .p-TimeNow, .DateTime .Hour-Container .Hour, .DateTime .WeekdayContainer .weekday, .DateTime .DayContainer .p-dia, .DateTime .MonthContainer .p-mes-except-decimal, .DateTime .MonthContainer .p-mes-except, .DateTime .MonthContainer .p-mes {
   color: #fff;

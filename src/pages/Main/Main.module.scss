@@ -1,0 +1,21 @@
+.BoxMain {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgb(169, 247, 221);
+  padding: 20px;
+  border-radius: 8px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  gap: 2rem;
+  flex-direction: column;
+}
+
+.BoxCart {
+  background-color: aquamarine;
+  width: 50vw;
+  height: 40vh;
+  border: 0.2rem solid rgba(0, 0, 0, 0.336);
+  border-radius: 2px;
+  box-shadow: 0.2rem 0.2em 0.2rem;
+}
