@@ -8,7 +8,7 @@ import View from './pages/View/View'
 function App() {
   return (
     <>
-      {/* <DateCustom /> */}
+      <DateCustom />
       <Routes>
         <Route path='/' element={<Main />} />
         <Route path='/view' element={<View />} />
