@@ -2,29 +2,57 @@ import Box from "@mui/material/Box";
 import styles from "./Main.module.css";
 import Avatar from "@mui/material/Avatar";
 import TextField from "@mui/material/TextField";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Typography } from "@mui/material";
 import html2canvas from "html2canvas";
-
+import useSound from "use-sound";
+// sounds
+import changeBgSound from "../../assets/sounds/setBackground.wav";
+import putSound from "../../assets/sounds/put.wav";
+import getSound from "../../assets/sounds/get.wav";
+import persona3 from "../../assets/sounds/1-16. Color Your Night.mp3";
+// animations
+import sparkle from "../../assets/animations/sparkle.gif";
 
 const Main = () => {
   const [cartBackground, setCartBackground] = useState("");
   const [write, setWrite] = useState("");
   const [stickersBox, setStickersInBox] = useState([]);
+  const [activeIndex, setActiveIndex] = useState(null);
+
+  const [playPersona] = useSound(persona3, {
+    volume: 0.3,
+    interrupt: true,
+  });
+
+  // sounds
+  const [playChangeBg] = useSound(changeBgSound, {
+    volume: 0.6,
+    interrupt: true,
+  });
+
+  const [playGet] = useSound(getSound, {
+    volume: 0.6,
+    interrupt: true,
+  });
+
+  const [playPut] = useSound(putSound, {
+    volume: 0.6,
+    interrupt: true,
+  });
 
   // Fazer Download
-const downloadBoxAsImage = () => {
-  const box = document.querySelector(`.${styles.MessageBox}`); // seleciona o elemento
-  if (!box) return;
+  const downloadBoxAsImage = () => {
+    const box = document.querySelector(`.${styles.MessageBox}`);
+    if (!box) return;
 
-  html2canvas(box, { useCORS: true }).then((canvas) => {
-    const link = document.createElement("a");
-    link.download = "meu_cartao.png";
-    link.href = canvas.toDataURL("image/png");
-    link.click();
-  });
-};
-
+    html2canvas(box, { useCORS: true }).then((canvas) => {
+      const link = document.createElement("a");
+      link.download = "meu_cartao.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    });
+  };
 
   // Funçoes de imagem
 
@@ -39,6 +67,7 @@ const downloadBoxAsImage = () => {
   const [draggedSticker, setDraggedSticker] = useState(null);
   const handleDrop = (e) => {
     e.preventDefault();
+    playPut();
     const stickerSrc = e.dataTransfer.getData("sticker");
 
     // posição relativa ao Box
@@ -83,21 +112,44 @@ const downloadBoxAsImage = () => {
 
   const stopMove = () => setDraggedSticker(null);
 
+
+
+
+
+  const handleAvatarClick = (image, idx) => {
+    setCartBackground(`url(${image.default})`);
+    playChangeBg();
+    setActiveIndex(idx);
+    setTimeout(() => setActiveIndex(null), 300);
+  };
+
+  useEffect(() => {
+    playPersona();
+  }, [playPersona]);
+
   return (
     <Box className={styles.BoxMain}>
+      <Box className={styles.redStripe}></Box>
+
       {/* UPPPER MAGIC */}
-      <Box
-        sx={{ display: "flex", padding: 2, backgroundColor: "#efef23", gap: 2 }}
-      >
+      <Box sx={{ display: "flex", padding: 2, gap: 2 }}>
         <Box className={styles.BoxSideMenu}>
           {Object.values(images).map((image, idx) => (
-            <Avatar
-              key={idx}
-              src={image.default}
-              alt={`Image ${idx + 1}`}
-              className={styles.avatar}
-              onClick={() => setCartBackground(`url(${image.default})`)}
-            />
+            <div key={idx} className={styles.avatarWrapper}>
+              <Avatar
+                src={image.default}
+                alt={`Image ${idx + 1}`}
+                className={styles.avatar}
+                onClick={() => handleAvatarClick(image, idx)}
+              />
+              {activeIndex === idx && (
+                <img
+                  src={sparkle}
+                  alt="sparkle"
+                  className={styles.sparkleGif}
+                />
+              )}
+            </div>
           ))}
         </Box>{" "}
         <Box className={styles.BoxCart}>
@@ -106,7 +158,7 @@ const downloadBoxAsImage = () => {
               backgroundImage: cartBackground,
             }}
             className={styles.MessageBox}
-            onDragOver={(e) => e.preventDefault()} // permite soltar dentro
+            onDragOver={(e) => e.preventDefault()} 
             onDrop={handleDrop}
             onMouseMove={moveSticker}
             onMouseUp={stopMove}
@@ -121,18 +173,16 @@ const downloadBoxAsImage = () => {
                   top: `${sticker.y}px`,
                   left: `${sticker.x}px`,
                 }}
-                onMouseDown={(e) => startMove(sticker.id, e)}
+                onMouseDown={(e) => {
+                  startMove(sticker.id, e);
+                }}
                 draggable={false}
               />
             ))}
           </Box>
-<Button 
-  className={styles.personaButton} 
-  onClick={downloadBoxAsImage}
->
-  BAIXAR
-</Button>
-          
+          <Button className={styles.personaButton} onClick={downloadBoxAsImage}>
+            BAIXAR
+          </Button>
         </Box>
         <Box className={styles.BoxSideMenu}>
           {Object.values(stickers).map((sticker, idx) => (
@@ -142,20 +192,20 @@ const downloadBoxAsImage = () => {
               alt={`Sticker ${idx + 1}`}
               className={styles.avatar}
               draggable
-              onDragStart={(e) =>
-                e.dataTransfer.setData("sticker", sticker.default)
-              }
+              onDragStart={(e) => {
+                playGet();
+                e.dataTransfer.setData("sticker", sticker.default);
+              }}
             />
           ))}
         </Box>
       </Box>
       {/* DOWN MAGIC  */}
-      <Box sx={{ width: "60%", backgroundColor: "#a1a1a131" }}>
+      <Box className={styles.cardBox}>
         <TextField
           name="card"
           multiline
           rows={3}
-          sx={{ width: "100%" }}
           onChange={(e) => setWrite(e.target.value)}
         />
       </Box>

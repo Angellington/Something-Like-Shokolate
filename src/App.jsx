@@ -4,8 +4,9 @@ import { Routes, Route } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import Main from './pages/Main/Main'
 import View from './pages/View/View'
-
 function App() {
+
+ 
   return (
     <>
       <DateCustom />

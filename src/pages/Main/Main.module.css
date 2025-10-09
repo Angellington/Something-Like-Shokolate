@@ -1,7 +1,8 @@
+@charset "UTF-8";
 .BoxMain {
   width: 100vw;
   height: 100vh;
-  background-color: rgb(169, 247, 221);
+  position: relative;
   padding: 20px;
   border-radius: 8px;
   justify-content: center;
@@ -9,6 +10,26 @@
   display: flex;
   gap: 2rem;
   flex-direction: column;
+  overflow: hidden; /* importante pro blur não vazar */
+  z-index: 1;
+}
+
+/* fundo borrado */
+.BoxMain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("/public/background/room.png");
+  background-size: cover;
+  background-position: center 80%;
+  filter: blur(3px) brightness(0.85);
+  transform: scale(1.1);
+  z-index: 0;
+}
+
+.BoxMain > * {
+  position: relative;
+  z-index: 1;
 }
 
 .BoxCart {
@@ -22,12 +43,19 @@
 
 .BoxSideMenu {
   display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.BoxSideMenu {
+  display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
   gap: 16px;
   padding: 16px;
   height: 400px; /* ou a altura que preferir */
   overflow-y: auto;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #d32f2f 0%, #800020 50%, #2b001f 100%);
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
@@ -69,14 +97,20 @@
   top: 10px;
   left: 10px;
   right: 10px;
-  color: #fff;
+  color: #463636;
   font-weight: bold;
-  background-color: rgba(0, 0, 0, 0.4);
   padding: 4px 8px;
   border-radius: 4px;
-  white-space: normal;
+  white-space: pre-wrap;
   word-wrap: break-word;
+  overflow-wrap: break-word;
   overflow: hidden;
+  line-height: 1.4;
+}
+.typographyBox:hover {
+  background-color: rgba(0, 0, 0, 0.1294117647);
+  cursor: grab;
+  user-select: none;
 }
 
 .MessageBox {
@@ -144,6 +178,77 @@
 }
 .personaButton:hover::before {
   left: 100%;
+}
+
+.avatarWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* Avatar normal */
+.avatar {
+  width: 64px;
+  height: 64px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.avatar:hover {
+  transform: scale(1.1);
+}
+
+/* GIF sobreposto */
+.sparkleGif {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 90px; /* ajusta conforme o gif */
+  height: 90px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: sparkleFade 1s ease-out;
+  z-index: 5;
+}
+
+@keyframes sparkleFade {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  30% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+}
+.redStripe {
+  position: fixed;
+  top: -30%; /* posição vertical inicial */
+  left: 10%; /* desloca para esquerda para ficar no centro da diagonal */
+  width: 200%; /* largura maior que a tela para atravessar em diagonal */
+  height: 500px; /* altura da faixa */
+  background-color: #ff0000; /* vermelho Persona5 */
+  transform: rotate(-70deg); /* inclinação diagonal */
+  z-index: 0; /* atrás do conteúdo */
+  pointer-events: none; /* permite clicar nos elementos acima sem interferir */
+  opacity: 0.5;
+}
+
+.cardBox {
+  width: 60%;
+  background-color: rgba(255, 255, 255, 0.6);
+  border: 2px solid #ff0000;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  color: #000000;
+  font-family: "Futura", sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 /*# sourceMappingURL=Main.module.css.map */
