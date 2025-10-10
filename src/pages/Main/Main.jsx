@@ -16,9 +16,12 @@ import sparkle from "../../assets/animations/sparkle.gif";
 
 const Main = () => {
   const [cartBackground, setCartBackground] = useState("");
-  const [write, setWrite] = useState("");
+  const [textInput, setTextInput] = useState("");
   const [stickersBox, setStickersInBox] = useState([]);
+  const [textsBox, setTextsInBox] = useState([]);
   const [activeIndex, setActiveIndex] = useState(null);
+  const [editingTextId, setEditingTextId] = useState(null);
+  const [editTextContent, setEditTextContent] = useState("");
 
   const [playPersona] = useSound(persona3, {
     volume: 0.3,
@@ -55,7 +58,6 @@ const Main = () => {
   };
 
   // Funçoes de imagem
-
   const images = import.meta.glob("/public/cartImage/*.{png,jpg,jpeg,svg}", {
     eager: true,
   });
@@ -63,35 +65,48 @@ const Main = () => {
     eager: true,
   });
 
-  // Funções de Drag and Drop
+  // Funções de Drag and Drop para stickers
   const [draggedSticker, setDraggedSticker] = useState(null);
+  const [draggedText, setDraggedText] = useState(null);
+
   const handleDrop = (e) => {
     e.preventDefault();
-    playPut();
     const stickerSrc = e.dataTransfer.getData("sticker");
+    const textContent = e.dataTransfer.getData("text");
 
-    // posição relativa ao Box
     const boxRect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - boxRect.left;
     const y = e.clientY - boxRect.top;
 
-    setStickersInBox((prev) => [
-      ...prev,
-      { src: stickerSrc, x, y, id: Date.now() },
-    ]);
+    if (stickerSrc) {
+      playPut();
+      setStickersInBox((prev) => [
+        ...prev,
+        { src: stickerSrc, x, y, id: Date.now() },
+      ]);
+    } else if (textContent) {
+      playPut();
+      setTextsInBox((prev) => [
+        ...prev,
+        {
+          content: textContent,
+          x,
+          y,
+          id: Date.now(),
+          fontSize: 30,
+          color: "#000000",
+        },
+      ]);
+    }
   };
 
-  const handleDragStart = (e, sticker) => {
-    e.dataTransfer.setData("sticker", sticker.default);
-  };
-
-  const startMove = (id, e) => {
+  // Movimento para stickers
+  const startMoveSticker = (id, e) => {
     e.stopPropagation();
-    const boxRect = e.currentTarget.parentElement.getBoundingClientRect(); // parent = MessageBox
-    const offsetX =
-      e.clientX - boxRect.left - stickersBox.find((s) => s.id === id).x;
-    const offsetY =
-      e.clientY - boxRect.top - stickersBox.find((s) => s.id === id).y;
+    const boxRect = e.currentTarget.parentElement.getBoundingClientRect();
+    const sticker = stickersBox.find((s) => s.id === id);
+    const offsetX = e.clientX - boxRect.left - sticker.x;
+    const offsetY = e.clientY - boxRect.top - sticker.y;
 
     setDraggedSticker({ id, offsetX, offsetY });
   };
@@ -110,11 +125,72 @@ const Main = () => {
     );
   };
 
-  const stopMove = () => setDraggedSticker(null);
+  // Movimento para textos
+  const startMoveText = (id, e) => {
+    e.stopPropagation();
+    const boxRect = e.currentTarget.parentElement.getBoundingClientRect();
+    const text = textsBox.find((t) => t.id === id);
+    const offsetX = e.clientX - boxRect.left - text.x;
+    const offsetY = e.clientY - boxRect.top - text.y;
 
+    setDraggedText({ id, offsetX, offsetY });
+  };
 
+  const moveText = (e) => {
+    if (!draggedText) return;
 
+    const boxRect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - boxRect.left - draggedText.offsetX;
+    const y = e.clientY - boxRect.top - draggedText.offsetY;
 
+    setTextsInBox((prev) =>
+      prev.map((text) =>
+        text.id === draggedText.id ? { ...text, x, y } : text
+      )
+    );
+  };
+
+  const stopMove = () => {
+    setDraggedSticker(null);
+    setDraggedText(null);
+  };
+
+  // Funções para textos
+  const addText = () => {
+    if (textInput.trim()) {
+      setTextsInBox((prev) => [
+        ...prev,
+        {
+          content: textInput,
+          x: 50,
+          y: 50,
+          id: Date.now(),
+          fontSize: 30,
+          color: "#000000",
+        },
+      ]);
+      setTextInput("");
+    }
+  };
+
+  const saveEditText = () => {
+    setTextsInBox((prev) =>
+      prev.map((text) =>
+        text.id === editingTextId ? { ...text, content: editTextContent } : text
+      )
+    );
+    setEditingTextId(null);
+    setEditTextContent("");
+  };
+
+  const cancelEditText = () => {
+    setEditingTextId(null);
+    setEditTextContent("");
+  };
+
+  const deleteText = (id) => {
+    setTextsInBox((prev) => prev.filter((text) => text.id !== id));
+  };
 
   const handleAvatarClick = (image, idx) => {
     setCartBackground(`url(${image.default})`);
@@ -131,7 +207,7 @@ const Main = () => {
     <Box className={styles.BoxMain}>
       <Box className={styles.redStripe}></Box>
 
-      {/* UPPPER MAGIC */}
+      {/* UPPER MAGIC */}
       <Box sx={{ display: "flex", padding: 2, gap: 2 }}>
         <Box className={styles.BoxSideMenu}>
           {Object.values(images).map((image, idx) => (
@@ -151,19 +227,88 @@ const Main = () => {
               )}
             </div>
           ))}
-        </Box>{" "}
+        </Box>
+
         <Box className={styles.BoxCart}>
           <Box
             sx={{
               backgroundImage: cartBackground,
             }}
             className={styles.MessageBox}
-            onDragOver={(e) => e.preventDefault()} 
+            onDragOver={(e) => e.preventDefault()}
             onDrop={handleDrop}
-            onMouseMove={moveSticker}
+            onMouseMove={(e) => {
+              moveSticker(e);
+              moveText(e);
+            }}
             onMouseUp={stopMove}
+            onMouseLeave={stopMove}
           >
-            <Typography className={styles.typographyBox}>{write}</Typography>
+            {/* Textos na box */}
+            {textsBox.map((text) => (
+              <div
+                key={text.id}
+                className={styles.textInsideBox}
+                style={{
+                  position: "absolute",
+                  top: `${text.y}px`,
+                  left: `${text.x}px`,
+                  fontSize: `${text.fontSize}px`,
+                  color: text.color,
+                  cursor: "move",
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  minWidth: "100px",
+                  minHeight: "20px",
+                }}
+                onMouseDown={(e) => startMoveText(text.id, e)}
+                onDoubleClick={() => {
+                  setEditingTextId(text.id);
+                  setEditTextContent(text.content);
+                }}
+              >
+                {editingTextId === text.id ? (
+                  <Box
+                    sx={{ display: "flex", flexDirection: "column", gap: 1 }}
+                  >
+                    <TextField
+                      value={editTextContent}
+                      onChange={(e) => setEditTextContent(e.target.value)}
+                      size="small"
+                      autoFocus
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          saveEditText();
+                        } else if (e.key === "Escape") {
+                          cancelEditText();
+                        }
+                      }}
+                      onBlur={saveEditText}
+                      sx={{
+                        backgroundColor: "white",
+                        borderRadius: "4px",
+                      }}
+                    />
+                  </Box>
+                ) : (
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <Typography
+                      sx={{
+                        fontSize: `${text.fontSize}px`,
+                        color: text.color,
+                        flexGrow: 1,
+                        textShadow: "1px 1px 2px rgba(0,0,0,0.3)",
+                        fontFamily: "Birthstone",
+                      }}
+                    >
+                      {text.content}
+                    </Typography>
+                  </Box>
+                )}
+              </div>
+            ))}
+
+            {/* Stickers na box */}
             {stickersBox.map((sticker) => (
               <img
                 key={sticker.id}
@@ -173,18 +318,15 @@ const Main = () => {
                   top: `${sticker.y}px`,
                   left: `${sticker.x}px`,
                 }}
-                onMouseDown={(e) => {
-                  startMove(sticker.id, e);
-                }}
+                onMouseDown={(e) => startMoveSticker(sticker.id, e)}
                 draggable={false}
               />
             ))}
           </Box>
-          <Button className={styles.personaButton} onClick={downloadBoxAsImage}>
-            BAIXAR
-          </Button>
         </Box>
+
         <Box className={styles.BoxSideMenu}>
+          {/* Stickers */}
           {Object.values(stickers).map((sticker, idx) => (
             <Avatar
               key={idx}
@@ -200,14 +342,34 @@ const Main = () => {
           ))}
         </Box>
       </Box>
-      {/* DOWN MAGIC  */}
-      <Box className={styles.cardBox}>
-        <TextField
-          name="card"
-          multiline
-          rows={3}
-          onChange={(e) => setWrite(e.target.value)}
-        />
+
+      {/* DOWN MAGIC - Área de texto */}
+      <Box className={styles.cardBox} sx={{ p: 2 }}>
+        <Box sx={{ display: "flex", gap: 2, alignItems: "flex-start" }}>
+          <TextField
+            label="Digite seu texto"
+            value={textInput}
+            onChange={(e) => setTextInput(e.target.value)}
+            multiline
+            rows={2}
+            sx={{ flexGrow: 1 }}
+            onKeyPress={(e) => {
+              if (e.key === "Enter" && e.ctrlKey) {
+                addText();
+              }
+            }}
+          />
+          <Button
+            variant="contained"
+            onClick={addText}
+            disabled={!textInput.trim()}
+          >
+            Adicionar Texto
+          </Button>
+          <Button className={styles.personaButton} onClick={downloadBoxAsImage}>
+            BAIXAR
+          </Button>
+        </Box>
       </Box>
     </Box>
   );

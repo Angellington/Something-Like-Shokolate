@@ -48,16 +48,16 @@
 .BoxSideMenu {
   display: flex;
   flex-direction: column;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 16px;
   padding: 16px;
-  height: 400px; /* ou a altura que preferir */
+  height: 400px; 
   overflow-y: auto;
 background: linear-gradient(
   135deg,
-  #d32f2f 0%,   /* vermelho intenso */
-  #800020 50%,  /* bordô escuro */
-  #2b001f 100%  /* roxo quase preto */
+  #d32f2f 0%,  
+  #800020 50%, 
+  #2b001f 100% 
 );
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -136,12 +136,15 @@ background: linear-gradient(
   width: 70px;
   height: 70px;
   cursor: grab;
+  user-select: none;
   transition: transform 0.2s ease;
 
   &:hover {
     transform: scale(1.1);
   }
 }
+
+
 
 .avatar {
   cursor: grab;
@@ -261,5 +264,14 @@ background: linear-gradient(
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
 
+// Adicionados pela IA
+.textInsideBox {
+  user-select: none;
+  z-index: 10;
+}
+
+.textInsideBox:hover {
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.5);
 }
